@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { UpdateUserDTO } from './dto/updateUser.dto';
 
 @Injectable()
 export class UsersService {
@@ -12,5 +13,9 @@ export class UsersService {
 
   async findOne(id: number): Promise<string> {
     return `Usuário ${id}!`;
+  }
+
+  async update(id: number, req: UpdateUserDTO): Promise<string> {
+    return `Usuário ${id} atualizado com sucesso!`;
   }
 }
