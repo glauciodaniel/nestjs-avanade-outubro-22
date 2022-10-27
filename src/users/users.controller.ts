@@ -6,6 +6,7 @@ import {
   Param,
   ParseUUIDPipe,
   Patch,
+  Delete,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDTO } from './dto/createUser.dto';
@@ -36,4 +37,8 @@ export class UsersController {
     return this.usersService.update(id, req);
   }
   // deletar
+  @Delete(':id')
+  remove(@Param('id', ParseUUIDPipe) id: number) {
+    return this.usersService.remove(id);
+  }
 }

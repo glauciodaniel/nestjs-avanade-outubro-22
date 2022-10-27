@@ -18,4 +18,8 @@ export class UsersService {
   async update(id: number, req: UpdateUserDTO): Promise<string> {
     return `Usuário ${id} atualizado com sucesso!`;
   }
+
+  async remove(id: number): Promise<string> {
+    return `Usuário ${id} deletado com sucesso!`;
+  }
 }
