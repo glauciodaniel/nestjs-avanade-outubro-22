@@ -1,13 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { users } from '@prisma/client';
 import { PrismaService } from '../prisma.service';
+import { CreateUserDTO } from './dto/createUser.dto';
 import { UpdateUserDTO } from './dto/updateUser.dto';
 
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  async create(data): Promise<users> {
+  async create(data: CreateUserDTO): Promise<users> {
     const { name, email, password } = data;
     const user = await this.prisma.users.create({
       data: {
@@ -17,7 +18,13 @@ export class UsersService {
       },
     });
     if (!user) {
-      throw new Error('Erro ao criar usuário!');
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          message: 'Erro ao criar usuário!',
+        },
+        HttpStatus.FORBIDDEN,
+      );
     }
     return user;
   }
