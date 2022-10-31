@@ -9,32 +9,12 @@ export class UsersService {
   constructor(private prisma: PrismaService) {}
 
   // await this.verifyUserExists('gabriel@email.com',false);
-  async verifyUserExists(email: string, errorUser: boolean): Promise<boolean> {
+  async verifyUserExists(email: string): Promise<boolean> {
     const user = await this.prisma.users.findUnique({
       where: {
         email: email,
       },
     });
-
-    if (user && errorUser) {
-      throw new HttpException(
-        {
-          status: HttpStatus.FORBIDDEN,
-          message: 'Usuário já existe!',
-        },
-        HttpStatus.FORBIDDEN,
-      );
-    }
-
-    if (!user && errorUser) {
-      throw new HttpException(
-        {
-          status: HttpStatus.FORBIDDEN,
-          message: 'Usuário não existe!',
-        },
-        HttpStatus.FORBIDDEN,
-      );
-    }
     return user ? true : false;
   }
 
@@ -46,7 +26,7 @@ export class UsersService {
     //findFirst é um método do prisma que busca o primeiro registro que encontrar.
 
     //verificar se usuário já existe.
-    const checkUser = await this.verifyUserExists(email, true);
+    const checkUser = await this.verifyUserExists(email);
     let user = undefined;
 
     if (!checkUser) {
