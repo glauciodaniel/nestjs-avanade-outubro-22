@@ -51,12 +51,16 @@ export class UsersService {
     return user;
   }
 
-  async findAll(): Promise<string> {
-    return 'Lista de usuários!';
+  async findAll(): Promise<users[]> {
+    return await this.prisma.users.findMany();
   }
 
-  async findOne(id: number): Promise<string> {
-    return `Usuário ${id}!`;
+  async findOne(id: number): Promise<users> {
+    return await this.prisma.users.findUnique({
+      where: {
+        id: id,
+      },
+    });
   }
 
   async update(id: number, req: UpdateUserDTO): Promise<string> {

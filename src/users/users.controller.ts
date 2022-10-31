@@ -4,7 +4,7 @@ import {
   Post,
   Get,
   Param,
-  ParseUUIDPipe,
+  ParseIntPipe,
   Patch,
   Delete,
 } from '@nestjs/common';
@@ -28,17 +28,17 @@ export class UsersController {
   }
   // listar um  localhost:3000/users/1
   @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: number) {
+  findOne(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.findOne(id);
   }
   // atualizar
   @Patch(':id')
-  update(@Param('id', ParseUUIDPipe) id: number, @Body() req: UpdateUserDTO) {
+  update(@Param('id', ParseIntPipe) id: number, @Body() req: UpdateUserDTO) {
     return this.usersService.update(id, req);
   }
   // deletar
   @Delete(':id')
-  remove(@Param('id', ParseUUIDPipe) id: number) {
+  remove(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.remove(id);
   }
 }
