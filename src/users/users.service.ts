@@ -8,6 +8,7 @@ import { UpdateUserDTO } from './dto/updateUser.dto';
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
+  // await this.verifyUserExists('gabriel@email.com',false);
   async verifyUserExists(email: string, errorUser: boolean): Promise<boolean> {
     const user = await this.prisma.users.findUnique({
       where: {
@@ -44,13 +45,20 @@ export class UsersService {
     //findUnique é um método do prisma que busca um usuário pelo campo único por exemplo email.
     //findFirst é um método do prisma que busca o primeiro registro que encontrar.
 
-    const user = await this.prisma.users.create({
-      data: {
-        name,
-        email,
-        password,
-      },
-    });
+    //verificar se usuário já existe.
+    const checkUser = await this.verifyUserExists(email, true);
+    let user = undefined;
+
+    if (!checkUser) {
+      user = await this.prisma.users.create({
+        data: {
+          name,
+          email,
+          password,
+        },
+      });
+    }
+
     if (!user) {
       throw new HttpException(
         {
