@@ -4,9 +4,13 @@ import { PrismaService } from '../prisma.service';
 import { CreateUserDTO } from './dto/createUser.dto';
 import { UpdateUserDTO } from './dto/updateUser.dto';
 import * as bcrypt from 'bcrypt';
+import { EmailService } from '../email/email.service';
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private emailService: EmailService,
+  ) {}
 
   // await this.verifyUserExists('gabriel@email.com',false);
   async verifyUserExists(email: string): Promise<boolean> {
@@ -44,6 +48,17 @@ export class UsersService {
           password: await this.crypto(password),
         },
       });
+      //enviando email
+      if (
+        await this.emailService.sendEmail(
+          email,
+          'Bem vindo ao sistema',
+          'Você se cadastrou no site Fiap Avanade',
+          {},
+        )
+      ) {
+        console.log('Email enviado com sucesso!');
+      }
     }
 
     if (!user) {

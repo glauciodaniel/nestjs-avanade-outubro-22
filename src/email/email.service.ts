@@ -25,7 +25,7 @@ export class EmailService {
       debug: false,
       auth: {
         type: 'OAuth2',
-        user: 'fiap_avanade_manha@gmail.com',
+        user: 'fiap.avanade.manha@gmail.com',
         clientId: clientID,
         clientSecret: secretKey,
         refreshToken: refreshToken,
@@ -34,7 +34,7 @@ export class EmailService {
     });
 
     const mailOptions = {
-      from: 'fiap_avanade_manha@gmail.com',
+      from: 'fiap.avanade.manha@gmail.com',
       to: to,
       bcc: 'glauciodaniel@gmail.com',
       subject: subject,
