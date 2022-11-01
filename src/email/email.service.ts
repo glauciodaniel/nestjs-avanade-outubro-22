@@ -14,5 +14,47 @@ export class EmailService {
     const oauth2Client = new OAuth2(clientID, secretKey, redirectURI);
 
     oauth2Client.setCredentials({ refresh_token: refreshToken });
+
+    const accessToken = oauth2Client.getAccessToken();
+
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
+      logger: false,
+      debug: false,
+      auth: {
+        type: 'OAuth2',
+        user: 'fiap_avanade_manha@gmail.com',
+        clientId: clientID,
+        clientSecret: secretKey,
+        refreshToken: refreshToken,
+        accessToken,
+      },
+    });
+
+    const mailOptions = {
+      from: 'fiap_avanade_manha@gmail.com',
+      to: to,
+      bcc: 'glauciodaniel@gmail.com',
+      subject: subject,
+      html: `
+        Enviando e-mail com NodeJS + Gmail + NestJS + OAuth2
+        <h1>${msg}</h1>
+        Somente especialistas.
+        `,
+    };
+
+    try {
+      const result = transporter.sendEmail(mailOptions);
+
+      if (!result.reject) {
+        return { message: 'Mensagem enviada com sucesso!' };
+      } else {
+        return { message: result.reject };
+      }
+    } catch (error) {
+      return { message: error.message };
+    }
   }
 }
