@@ -12,6 +12,19 @@ export class UsersService {
     private emailService: EmailService,
   ) {}
 
+  async getUserById(id: string): Promise<users> {
+    const user = await this.prisma.users.findUnique({
+      where: {
+        id: Number(id),
+      },
+    });
+
+    if (!user) {
+      throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND);
+    }
+    return user;
+  }
+
   // await this.verifyUserExists('gabriel@email.com',false);
   async verifyUserExists(email: string): Promise<boolean> {
     const user = await this.prisma.users.findUnique({
@@ -85,8 +98,32 @@ export class UsersService {
     });
   }
 
-  async update(id: number, req: UpdateUserDTO): Promise<string> {
-    return `Usuário ${id} atualizado com sucesso!`;
+  async update(id: number, req: UpdateUserDTO): Promise<object> {
+    const user = await this.getUserById(id.toString());
+
+    const { name, email, password } = req;
+    const updatedUser = await this.prisma.users.update({
+      where: {
+        id: Number(id),
+      },
+      data: {
+        name: name ? name : user.name,
+        email: email ? email : user.email,
+        password: password ? await this.crypto(password) : user.password,
+      },
+    });
+
+    if (!updatedUser) {
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          message: 'Erro ao atualizar usuário!',
+        },
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    return { msg: `Usuário ${updatedUser.name} atualizado com sucesso!` };
   }
 
   async remove(id: number): Promise<string> {
