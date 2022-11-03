@@ -102,6 +102,26 @@ export class UsersService {
     const user = await this.getUserById(id.toString());
 
     const { name, email, password } = req;
+
+    //antes de alterar alguém no banco, é necessário verificar se o e-mail desejado está disponível.
+    if (email) {
+      const checkEmail = await this.prisma.users.findMany({
+        where: {
+          AND: [{ email: email }, { id: { not: Number(id) } }],
+        },
+      });
+
+      if (checkEmail) {
+        throw new HttpException(
+          {
+            status: HttpStatus.FORBIDDEN,
+            message: 'Este e-mail está indisponível!',
+          },
+          HttpStatus.FORBIDDEN,
+        );
+      }
+    }
+
     const updatedUser = await this.prisma.users.update({
       where: {
         id: Number(id),
