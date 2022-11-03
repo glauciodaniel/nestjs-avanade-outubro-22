@@ -111,7 +111,7 @@ export class UsersService {
         },
       });
 
-      if (checkEmail) {
+      if (checkEmail.length > 0) {
         throw new HttpException(
           {
             status: HttpStatus.FORBIDDEN,
@@ -146,7 +146,25 @@ export class UsersService {
     return { msg: `Usuário ${updatedUser.name} atualizado com sucesso!` };
   }
 
-  async remove(id: number): Promise<string> {
-    return `Usuário ${id} deletado com sucesso!`;
+  async remove(id: number): Promise<object> {
+    const user = await this.getUserById(id.toString());
+
+    const deletedUser = await this.prisma.users.delete({
+      where: {
+        id: Number(id),
+      },
+    });
+
+    if (!deletedUser) {
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          message: 'Erro ao deletar usuário!',
+        },
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    return { msg: `Usuário ${user.name} deletado com sucesso!` };
   }
 }
