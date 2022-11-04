@@ -9,7 +9,14 @@ import { LogisticsModule } from './logistics/logistics.module';
 import { EmailModule } from './email/email.module';
 
 @Module({
-  imports: [AuthModule, UsersModule, ProductsModule, OrdersModule, LogisticsModule, EmailModule],
+  imports: [
+    AuthModule,
+    UsersModule,
+    ProductsModule,
+    OrdersModule,
+    LogisticsModule,
+    EmailModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
